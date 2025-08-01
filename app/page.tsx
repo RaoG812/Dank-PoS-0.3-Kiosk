@@ -6,6 +6,7 @@ import ProductMenu from '../components/ProductMenu';
 export default function Home() {
   const [idle, setIdle] = useState(false);
 
+
   useEffect(() => {
     let timer: NodeJS.Timeout;
     const reset = () => {
@@ -23,5 +24,16 @@ export default function Home() {
     };
   }, []);
 
-  return idle ? <IdleScreen onWake={() => setIdle(false)} /> : <ProductMenu />;
+  if (!loggedIn) {
+    return <LoginForm onLoggedIn={() => setLoggedIn(true)} />;
+  }
+
+  return idle ? (
+    <IdleScreen onWake={() => setIdle(false)} />
+  ) : (
+    <div className="h-screen flex flex-col">
+      <NavBar />
+      <ProductMenu />
+    </div>
+  );
 }

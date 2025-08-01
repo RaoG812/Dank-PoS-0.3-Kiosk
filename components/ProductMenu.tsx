@@ -1,11 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { createClient } from '@supabase/supabase-js';
 import AIConsultant from './AIConsultant';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-const supabase = createClient(supabaseUrl, supabaseKey);
+import { getClientSupabaseClient } from '../lib/supabase/client';
 
 interface Item {
   id: number;
@@ -18,6 +14,8 @@ export default function ProductMenu() {
   const [items, setItems] = useState<Item[]>([]);
 
   useEffect(() => {
+
+    const supabase = getClientSupabaseClient();
     supabase.from('kiosk_items').select('*').then(({ data }) => {
       if (data) setItems(data as Item[]);
     });
