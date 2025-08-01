@@ -5,17 +5,26 @@ import AdminConfirmModal from '../../components/AdminConfirmModal';
 import NavBar from '../../components/NavBar';
 
 export default function SettingsPage() {
-  const supabase = getClientSupabaseClient();
+  const [supabase, setSupabase] = useState<any>(null);
   const [items, setItems] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    supabase.from('kiosk_items').select('*').then(({ data }) => {
-      if (data) setItems(data as any[]);
-    });
+    if (!supabase && typeof window !== 'undefined') {
+      setSupabase(getClientSupabaseClient());
+    }
+  }, [supabase]);
+
+  useEffect(() => {
+    if (supabase) {
+      supabase.from('kiosk_items').select('*').then(({ data }: { data: any[] | null }) => {
+        if (data) setItems(data as any[]);
+      });
+    }
   }, [supabase]);
 
   const handleDelete = async (id: number, user: string, pass: string) => {
+    if (!supabase) return;
     await supabase.from('kiosk_items').delete().eq('id', id);
     setItems(items.filter(i => i.id !== id));
   };

@@ -33,7 +33,16 @@ export const getServerSupabaseClient = (): SupabaseClient => {
 
 // This default client is specifically for operations that *must* use the host database,
 // like the login route for fetching shop credentials based on user info.
-export const defaultSupabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+let defaultClient: SupabaseClient | null = null;
+
+export const getDefaultSupabase = (): SupabaseClient => {
+  if (!defaultClient) {
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    if (!url || !anonKey) {
+      throw new Error('Default Supabase environment variables are missing for server client.');
+    }
+    defaultClient = createClient(url, anonKey);
+  }
+  return defaultClient;
+};

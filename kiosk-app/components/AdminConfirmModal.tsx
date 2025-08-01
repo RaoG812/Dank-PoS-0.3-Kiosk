@@ -1,6 +1,6 @@
 // components/AdminConfirmModal.tsx
 import React, { useState } from 'react';
-import { useLoader } from '@/contexts/LoaderContext'; // Import useLoader
+import { useLoader } from '../contexts/LoaderContext';
 
 // Define the types for the component's props
 interface AdminConfirmModalProps {

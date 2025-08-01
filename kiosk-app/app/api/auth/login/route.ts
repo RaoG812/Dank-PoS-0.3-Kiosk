@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers'; // Import cookies to set them
-import { defaultSupabase } from '@/lib/supabase/server'; // Use the defaultSupabase from the server-side utility
-import { AdminUser, Shop } from '@/types'; // Import AdminUser and Shop types
-import bcrypt from 'bcrypt'; // Import bcrypt
+import { getDefaultSupabase } from '../../../../lib/supabase/server';
+import { AdminUser, Shop } from '../../../../types';
+import bcrypt from 'bcryptjs';
 
 export async function POST(request: Request) {
     try {
+        const defaultSupabase = getDefaultSupabase();
         const { uid, username, password } = await request.json();
 
         // Ensure at least one login method is provided
@@ -110,7 +111,7 @@ export async function POST(request: Request) {
 
         // Login successful
         // Return user data along with shop credentials (excluding sensitive info like password_hash and plain password)
-        const { password_hash, password: plainPassword, ...restUser } = user; // Destructure to exclude both password_hash and the plain 'password' field if it exists
+        const { password_hash, ...restUser } = user; // Exclude password_hash from response
         return NextResponse.json({
             ...restUser,
             // You can still return these to the client for client-side Supabase initialization
