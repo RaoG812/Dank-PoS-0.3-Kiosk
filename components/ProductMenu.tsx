@@ -14,6 +14,7 @@ export default function ProductMenu() {
   const [items, setItems] = useState<Item[]>([]);
 
   useEffect(() => {
+
     const supabase = getClientSupabaseClient();
     supabase.from('kiosk_items').select('*').then(({ data }) => {
       if (data) setItems(data as Item[]);
@@ -22,12 +23,12 @@ export default function ProductMenu() {
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
-      <div className="flex-1 overflow-y-auto p-6 custom-scrollbar grid grid-cols-3 gap-6">
+      <div className="flex-1 overflow-y-auto p-4 custom-scrollbar grid grid-cols-2 gap-4">
         {items.map(i => (
-          <div key={i.id} className="bg-[var(--color-bg-secondary)] rounded-lg p-4 flex flex-col items-center shadow-lg">
-            {i.image_url && <img src={i.image_url} alt={i.name} className="mb-2 w-full h-48 object-cover rounded" />}
-            <p className="text-xl font-semibold">{i.name}</p>
-            <p className="text-[var(--color-primary)] text-lg">${i.price.toFixed(2)}</p>
+          <div key={i.id} className="bg-[var(--color-bg-secondary)] rounded p-2 flex flex-col items-center">
+            {i.image_url && <img src={i.image_url} alt={i.name} className="mb-2 w-full h-40 object-cover" />}
+            <p className="text-lg font-bold">{i.name}</p>
+            <p>${i.price.toFixed(2)}</p>
           </div>
         ))}
       </div>

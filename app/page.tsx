@@ -2,12 +2,10 @@
 import { useEffect, useState } from 'react';
 import IdleScreen from '../components/IdleScreen';
 import ProductMenu from '../components/ProductMenu';
-import LoginForm from '../components/LoginForm';
-import NavBar from '../components/NavBar';
 
 export default function Home() {
   const [idle, setIdle] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(false);
+
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
