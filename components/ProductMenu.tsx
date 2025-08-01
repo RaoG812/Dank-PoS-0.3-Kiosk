@@ -13,6 +13,14 @@ interface Item {
 export default function ProductMenu() {
   const [items, setItems] = useState<Item[]>([]);
 
+  const placeOrder = async (itemId: number) => {
+    await fetch('/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ item_id: itemId, machine_id: 'kiosk-1' })
+    });
+  };
+
   useEffect(() => {
     const supabase = getClientSupabaseClient();
     supabase.from('kiosk_items').select('*').then(({ data }) => {
@@ -27,7 +35,8 @@ export default function ProductMenu() {
           <div key={i.id} className="bg-[var(--color-bg-secondary)] rounded-lg p-4 flex flex-col items-center shadow-lg">
             {i.image_url && <img src={i.image_url} alt={i.name} className="mb-2 w-full h-48 object-cover rounded" />}
             <p className="text-xl font-semibold">{i.name}</p>
-            <p className="text-[var(--color-primary)] text-lg">${i.price.toFixed(2)}</p>
+            <p className="text-[var(--color-primary)] text-lg mb-2">${i.price.toFixed(2)}</p>
+            <button onClick={() => placeOrder(i.id)} className="bg-[var(--color-primary)] text-black px-3 py-1 rounded">Order</button>
           </div>
         ))}
       </div>

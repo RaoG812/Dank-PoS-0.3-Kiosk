@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { getClientSupabaseClient } from '../../lib/supabase/client';
 import AdminConfirmModal from '../../components/AdminConfirmModal';
 import NavBar from '../../components/NavBar';
+import AddItemForm from '../../components/AddItemForm';
 
 export default function SettingsPage() {
   const supabase = getClientSupabaseClient();
@@ -25,6 +26,7 @@ export default function SettingsPage() {
       <NavBar />
       <div className="p-6 space-y-4 flex-1 overflow-y-auto">
         <h1 className="text-2xl font-bold mb-4">Settings</h1>
+        <AddItemForm onAdd={(item) => setItems([...items, item])} />
         {items.map(i => (
           <div key={i.id} className="border border-[var(--color-border)] p-4 rounded flex justify-between items-center">
             <div className="space-y-1">
