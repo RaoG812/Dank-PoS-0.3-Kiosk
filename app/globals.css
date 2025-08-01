@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* globals.css */
+
+:root {
+  /* Default Theme (Dark - based on logo) */
+  --color-primary: #f4c217; /* Dominant yellow as requested */
+  --color-secondary: #EAB308; /* yellow-500 - kept for slightly darker yellow accent */
+  --color-text-primary: #E5E7EB; /* gray-200 */
+  --color-text-secondary: #9CA3AF; /* gray-400 */
+  --color-text-tertiary: #000000; /* BLACK */
+  --color-bg-primary: #0A0A0A; /* gray-950 */
+  --color-bg-secondary: #1F2937; /* gray-800 */
+  --color-bg-tertiary: #111827; /* gray-900 */
+  --color-border: #374151; /* gray-700 */
+  --color-success: #16A34A; /* green-600 */
+  --color-danger: #DC2626; /* red-600 */
+  --color-info: #2563EB; /* blue-600 */
+  --color-warning: #EA580C; /* orange-600 */
+  --color-purple: #9333EA; /* purple-600 */
+}
+
+.light-theme {
+  /* Light Theme */
+  --color-primary: #f4c217; /* Dominant yellow as requested */
+  --color-secondary: #EAB308; /* yellow-500 - kept for slightly darker yellow accent */
+  --color-text-primary: #111827; /* Darker for better readability against light background (gray-900) */
+  --color-text-secondary: #374151; /* Darker for better readability against light background (gray-700) */
+  --color-bg-primary: #F9FAFB; /* gray-50 */
+  --color-bg-secondary: #FFFFFF; /* white */
+  --color-bg-tertiary: #F3F4F6; /* gray-100 */
+  --color-border: #D1D5DB; /* gray-300 */
+  --color-success: #16A34A; /* green-600 */
+  --color-danger: #DC2626; /* red-600 */
+  --color-info: #2563EB; /* blue-600 */
+  --color-warning: #EA580C; /* orange-600 */
+  --color-purple: #9333EA; /* purple-600 */
+}
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  /* Apply default theme colors */
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+.touch-dragging { opacity: 0.7; transform: scale(1.05); transition: none; }
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: var(--color-bg-secondary); /* Use theme variable */
+    border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--color-text-secondary); /* Use theme variable */
+    border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-secondary); /* Use theme variable, slightly darker on hover might be good */
+    filter: brightness(1.2); /* Example for hover effect */
+}
+.alert-backdrop {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important; /* For Safari support */
+    z-index: 9999;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+.animate-marquee {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee 20s linear infinite;
+}
