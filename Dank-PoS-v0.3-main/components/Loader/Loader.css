@@ -1,0 +1,136 @@
+/* components/Loader/Loader.css */
+:root {
+    --path-dank-length: 0px; /* This variable will be set by JavaScript */
+    --logo-main-color: #f8c71f; /* Define your main logo color as a variable */
+    --logo-secondary-color: #f4c318; /* Define your secondary logo color as a variable */
+}
+
+/* Overlay that covers the whole screen */
+.loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: black; /* Semi-transparent black background */
+    display: flex;
+    flex-direction: column; /* To stack logo and message */
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Ensure it's on top of everything */
+    opacity: 1;
+    transition: opacity 0.5s ease-out; /* Smooth fade out */
+}
+
+/* Loader container for sizing and shadow */
+.loader-container {
+    width: 300px; /* Adjust size as needed */
+    height: 300px; /* Maintain aspect ratio */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 30px rgba(248, 199, 31, 0.4); /* Glow effect */
+    border-radius: 50%; /* If you want a circular container */
+}
+
+#logo-loader-svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 5px rgba(248, 199, 31, 0.5)); /* Soft glow on the logo itself */
+    transform-origin: center center; /* Ensure transformations are centered */
+}
+
+/* Base styles for paths - ensure they start hidden or in their initial state */
+#Dank {
+    fill: none; /* No fill initially for stroke animation */
+    stroke: var(--logo-main-color); /* Use defined color variable */
+    stroke-width: 30; /* Increased stroke width for bolder line, adjust as needed */
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: var(--path-dank-length);
+    stroke-dashoffset: var(--path-dank-length);
+    animation: drawD 2.5s forwards cubic-bezier(0.25, 0.1, 0.25, 1); /* Slower, smoother drawing */
+}
+
+#LeafPath {
+    opacity: 0; /* Start completely transparent */
+    fill: var(--logo-secondary-color); /* Use defined color variable */
+    transform: scale(0); /* Start scaled down for a "pop-in" effect */
+    transform-origin: center center;
+    animation: appearLeaf 1.2s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Bounce and slightly elastic */
+    animation-delay: 2s; /* Delay after 'D' has mostly drawn */
+}
+
+/* Keyframe Animations */
+@keyframes drawD {
+    0% {
+        stroke-dashoffset: var(--path-dank-length);
+        stroke-width: 0; /* Start with no stroke width */
+        fill: none;
+    }
+    50% {
+        stroke-width: 30; /* Max stroke width during drawing */
+        fill: none;
+    }
+    90% {
+        stroke-dashoffset: 0; /* Almost fully drawn */
+        fill: none;
+    }
+    100% {
+        stroke-dashoffset: 0;
+        stroke-width: 30; /* Ensure stroke width is maintained */
+        fill: var(--logo-main-color); /* Fill the 'D' at the very end of drawing */
+    }
+}
+
+@keyframes appearLeaf {
+    0% {
+        opacity: 0;
+        transform: scale(0.5) rotate(-45deg); /* Start smaller and rotated */
+    }
+    70% {
+        opacity: 1;
+        transform: scale(1.05) rotate(5deg); /* Overshoot slightly for bounce */
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg); /* Settle at final size and rotation */
+    }
+}
+
+/* Continuous "Breathing" / "Floating" animation for the entire logo */
+@keyframes continuousLogoPulse {
+    0% {
+        transform: scale(1) translateY(0px) rotate(0deg);
+        filter: drop-shadow(0 0 5px rgba(248, 199, 31, 0.5));
+    }
+    50% {
+        transform: scale(1.02) translateY(0px) rotate(0deg);
+        filter: drop-shadow(0 0 10px rgba(248, 199, 31, 0.9));
+    }
+    100% {
+        transform: scale(1) translateY(0px) rotate(0deg);
+        filter: drop-shadow(0 0 5px rgba(248, 199, 31, 0.5));
+    }
+}
+
+/* Apply continuous animation to the entire SVG after initial animations */
+#logo-loader-svg.animate-loop {
+    animation: continuousLogoPulse 5s infinite ease-in-out alternate; /* Added 'alternate' direction */
+    /* Ensure initial animations complete and then stay at their final state */
+    #Dank {
+        animation-fill-mode: forwards;
+        animation-play-state: running; /* Allow initial animation to complete */
+    }
+    #LeafPath {
+        animation-fill-mode: forwards;
+        animation-play-state: running; /* Allow initial animation to complete */
+    }
+}
+
+.loader-message {
+  color: #f8c71f; /* A color that stands out on black */
+  font-size: 1.5rem;
+  margin-top: 20px;
+  text-shadow: 0 0 5px rgba(248, 199, 31, 0.7);
+}
