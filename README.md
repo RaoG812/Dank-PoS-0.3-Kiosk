@@ -15,7 +15,8 @@ Main Features:
 - Ability to link orders to the main Dank PoS session when a shop PoS is logged in.
 
 The kiosk uses the same Supabase back end as the main app and can be started with
-`npm run dev` inside this folder.
+`npm run dev` inside this folder. The interface now boots directly into the menu for a
+frictionless customer experience.
 
 
 ## StrainPicAi workflow

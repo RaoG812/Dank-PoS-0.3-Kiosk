@@ -7,7 +7,6 @@ export default function NavBar() {
       <Link href="/" className="font-bold text-xl">Dank Machine</Link>
       <div className="space-x-4 text-lg">
         <Link href="/" className="hover:text-[var(--color-primary)]">Menu</Link>
-        <Link href="/-accessed" className="hover:text-[var(--color-primary)]">Settings</Link>
       </div>
     </nav>
   );
