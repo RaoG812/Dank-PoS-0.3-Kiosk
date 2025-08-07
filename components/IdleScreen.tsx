@@ -6,15 +6,21 @@ export default function IdleScreen({ onWake }: { onWake: () => void }) {
     const handler = () => onWake();
     window.addEventListener('touchstart', handler);
     window.addEventListener('keydown', handler);
+    window.addEventListener('mousemove', handler);
     return () => {
       window.removeEventListener('touchstart', handler);
       window.removeEventListener('keydown', handler);
+      window.removeEventListener('mousemove', handler);
     };
   }, [onWake]);
 
   return (
-    <div className="flex items-center justify-center h-screen bg-[var(--color-bg-primary)] text-[var(--color-primary)]">
-      <h1 className="text-5xl animate-pulse">Dank Machine</h1>
+    <div
+      onClick={onWake}
+      className="flex flex-col items-center justify-center h-screen select-none bg-gradient-to-br from-[var(--color-bg-primary)] to-[var(--color-bg-secondary)] text-[var(--color-primary)]"
+    >
+      <h1 className="text-6xl font-bold mb-6 animate-pulse">Dank Machine</h1>
+      <p className="text-xl animate-bounce">Tap to start</p>
     </div>
   );
 }
