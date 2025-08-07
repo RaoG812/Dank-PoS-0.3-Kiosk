@@ -10,14 +10,17 @@ export default function SettingsPage() {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    supabase.from('kiosk_items').select('*').then(({ data }) => {
-      if (data) setItems(data as any[]);
-    });
+    supabase
+      .from('inventory')
+      .select('id, name')
+      .then(({ data }) => {
+        if (data) setItems(data as any[]);
+      });
   }, [supabase]);
 
-  const handleDelete = async (id: number, user: string, pass: string) => {
-    await supabase.from('kiosk_items').delete().eq('id', id);
-    setItems(items.filter(i => i.id !== id));
+  const handleDelete = async (id: string, user: string, pass: string) => {
+    await supabase.from('inventory').delete().eq('id', id);
+    setItems(items.filter((i) => i.id !== id));
   };
 
   return (

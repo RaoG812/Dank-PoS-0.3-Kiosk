@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { generateConsultation } from '../lib/gemini';
 
-interface Item { id: number; name: string; }
+interface Item { id: string; name: string; }
 
 export default function AIConsultant({ items }: { items: Item[] }) {
   const [question, setQuestion] = useState('');
