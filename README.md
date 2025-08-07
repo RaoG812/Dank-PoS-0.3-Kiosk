@@ -22,6 +22,8 @@ The kiosk uses the same Supabase back end as the main app and can be started wit
 Use `generateStrainImage(strain)` from `lib/gemini.ts` when creating a new item.
 The returned URL should be stored in `strain_images` table. See
 `create_strain_images.sql` for the table schema.
+An order table `kiosk_orders` is provided in `create_kiosk_orders.sql` for linking
+orders placed on a machine to the main PoS.
 
 ## Order integration
 The kiosk checks that a PoS session is active by verifying a valid Supabase
