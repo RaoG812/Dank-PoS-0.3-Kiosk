@@ -12,6 +12,8 @@ Main Features:
 - Scrollable product display with large photos.
 - AI generated strain images via **StrainPicAi** using Gemini.
 - AI consultant chat that suggests products available on the kiosk.
+- Persistent login so the menu remains accessible when navigating.
+- Floating AI assistant button with smooth animations.
 - Ability to link orders to the main Dank PoS session when a shop PoS is logged in.
 
 The kiosk uses the same Supabase back end as the main app and can be started with

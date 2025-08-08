@@ -9,6 +9,14 @@ export default function Home() {
   const [idle, setIdle] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
 
+  // Restore login status so navigation doesn't bounce back to the login screen
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('loggedIn');
+      if (stored === 'true') setLoggedIn(true);
+    }
+  }, []);
+
   useEffect(() => {
     let timer: NodeJS.Timeout;
     const reset = () => {
@@ -27,7 +35,14 @@ export default function Home() {
   }, []);
 
   if (!loggedIn) {
-    return <LoginForm onLoggedIn={() => setLoggedIn(true)} />;
+    return (
+      <LoginForm
+        onLoggedIn={() => {
+          localStorage.setItem('loggedIn', 'true');
+          setLoggedIn(true);
+        }}
+      />
+    );
   }
 
   return idle ? (
