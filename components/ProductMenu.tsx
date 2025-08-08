@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import AIConsultant from './AIConsultant';
-import { getClientSupabaseClient } from '../lib/supabase/client';
+import { getClientSupabaseClient, restoreSupabaseClient } from '../lib/supabase/client';
 import { generateStrainImage } from '../lib/gemini';
 import { MessageCircle } from 'lucide-react';
 
@@ -29,6 +29,7 @@ export default function ProductMenu() {
       } catch {}
     }
 
+    restoreSupabaseClient();
     const supabase = getClientSupabaseClient();
     supabase
       .from('kiosk_items')
@@ -130,7 +131,7 @@ export default function ProductMenu() {
 
       <button
         onClick={() => setShowAI((v) => !v)}
-        className="fixed bottom-4 right-4 p-4 rounded-full bg-[var(--color-primary)] text-black shadow-lg transition-transform transform hover:scale-110 hover:shadow-[0_0_20px_var(--color-primary)] active:scale-95"
+        className={`fixed bottom-4 right-4 p-4 rounded-full bg-[var(--color-primary)] text-black shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-[0_0_20px_var(--color-primary)] active:scale-95 ${showAI ? '' : 'animate-pulse'}`}
         aria-label="AI Consultant"
       >
         <MessageCircle className="w-6 h-6" />

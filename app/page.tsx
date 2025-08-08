@@ -8,36 +8,46 @@ import { initializeSupabaseClient } from '../lib/supabase/client';
 
 export default function Home() {
   const [idle, setIdle] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(false);
-
-  // Restore login status and Supabase credentials
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('loggedIn');
-      if (stored === 'true') {
-        const url = localStorage.getItem('supabaseUrl');
-        const key = localStorage.getItem('supabaseAnonKey');
-        if (url && key) {
-          try {
-            initializeSupabaseClient(url, key);
-          } catch (e) {
-            console.error('Failed to restore Supabase client:', e);
-          }
-        }
-        setLoggedIn(true);
-        if (sessionStorage.getItem('forceIdle') === 'true') {
-          setIdle(true);
-          sessionStorage.removeItem('forceIdle');
+  const [loggedIn, setLoggedIn] = useState(() => {
+    if (typeof window !== 'undefined' && localStorage.getItem('loggedIn') === 'true') {
+      const url = localStorage.getItem('supabaseUrl');
+      const key = localStorage.getItem('supabaseAnonKey');
+      if (url && key) {
+        try {
+          initializeSupabaseClient(url, key);
+        } catch (e) {
+          console.error('Failed to restore Supabase client:', e);
         }
       }
+      return true;
     }
-  }, []);
+    return false;
+  });
 
   useEffect(() => {
+    if (loggedIn && typeof window !== 'undefined' && sessionStorage.getItem('forceIdle') === 'true') {
+      setIdle(true);
+      sessionStorage.removeItem('forceIdle');
+    }
+  }, [loggedIn]);
+
+  useEffect(() => {
+    const getTimeout = () => {
+      if (typeof window === 'undefined') return 60000;
+      const stored = localStorage.getItem('kioskSettings');
+      if (stored) {
+        try {
+          const s = JSON.parse(stored);
+          if (typeof s.idleTimeout === 'number') return s.idleTimeout * 1000;
+        } catch {}
+      }
+      return 60000;
+    };
+
     let timer: NodeJS.Timeout;
     const reset = () => {
       clearTimeout(timer);
-      timer = setTimeout(() => setIdle(true), 30000);
+      timer = setTimeout(() => setIdle(true), getTimeout());
       setIdle(false);
     };
     window.addEventListener('mousemove', reset);

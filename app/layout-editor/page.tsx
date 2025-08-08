@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import NavBar from '../../components/NavBar';
-import { getClientSupabaseClient } from '../../lib/supabase/client';
+import { getClientSupabaseClient, restoreSupabaseClient } from '../../lib/supabase/client';
 import { generateStrainImage } from '../../lib/gemini';
 
 interface LayoutItem {
@@ -15,12 +15,13 @@ interface LayoutItem {
 }
 
 export default function LayoutPage() {
-  const supabase = getClientSupabaseClient();
   const [items, setItems] = useState<LayoutItem[]>([]);
   const [loadingId, setLoadingId] = useState<string | null>(null);
 
   useEffect(() => {
     const load = async () => {
+      restoreSupabaseClient();
+      const supabase = getClientSupabaseClient();
       const { data: inv } = await supabase
         .from('inventory')
         .select('id, name, pricing_options, image_url, category, description');
@@ -42,7 +43,7 @@ export default function LayoutPage() {
       setItems(merged);
     };
     load();
-  }, [supabase]);
+  }, []);
 
   const handleGenerateImage = async (item: LayoutItem) => {
     try {
@@ -50,6 +51,7 @@ export default function LayoutPage() {
       const base64 = await generateStrainImage(item.name);
       if (!base64) throw new Error('No image data returned');
 
+      const supabase = getClientSupabaseClient();
       const byteCharacters = atob(base64);
       const byteNumbers = new Array(byteCharacters.length);
       for (let i = 0; i < byteCharacters.length; i++) {
@@ -86,6 +88,7 @@ export default function LayoutPage() {
   };
 
   const handleSave = async (item: LayoutItem) => {
+    const supabase = getClientSupabaseClient();
     await supabase.from('kiosk_items').upsert({
       id: item.id,
       name: item.name,
@@ -100,16 +103,15 @@ export default function LayoutPage() {
   const handleToggle = async (item: LayoutItem) => {
     const updated = { ...item, enabled: !item.enabled };
     setItems((prev) => prev.map((i) => (i.id === item.id ? updated : i)));
-    await supabase
-      .from('kiosk_items')
-      .upsert({
-        id: updated.id,
-        name: updated.name,
-        display_name: updated.name,
-        price: updated.price,
-        image_url: updated.image_url,
-        enabled: updated.enabled,
-      });
+    const supabase = getClientSupabaseClient();
+    await supabase.from('kiosk_items').upsert({
+      id: updated.id,
+      name: updated.name,
+      display_name: updated.name,
+      price: updated.price,
+      image_url: updated.image_url,
+      enabled: updated.enabled,
+    });
   };
 
   const handleLogout = () => {

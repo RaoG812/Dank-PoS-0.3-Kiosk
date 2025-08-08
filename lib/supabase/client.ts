@@ -3,6 +3,19 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 let clientSupabase: SupabaseClient | null = null;
 let defaultClientSupabase: SupabaseClient | null = null; // NEW: Variable for the default client
+/**
+ * Restores a previously saved shop-specific Supabase client from localStorage.
+ * If the client has already been initialized this is a no-op.
+ */
+export const restoreSupabaseClient = () => {
+  if (!clientSupabase && typeof window !== 'undefined') {
+    const url = localStorage.getItem('supabaseUrl');
+    const key = localStorage.getItem('supabaseAnonKey');
+    if (url && key) {
+      clientSupabase = createClient(url, key);
+    }
+  }
+};
 
 /**
  * Initializes the client-side Supabase client with the given URL and Anon Key.
