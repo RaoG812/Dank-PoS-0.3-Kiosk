@@ -32,12 +32,13 @@ export default function ProductMenu() {
     const supabase = getClientSupabaseClient();
     supabase
       .from('kiosk_items')
-      .select('inventory_id, name, display_name, price, image_url')
+      .select('id, name, display_name, price, image_url')
+      .eq('enabled', true)
       .then(({ data }) => {
         if (data)
           setItems(
             (data as any[]).map((i) => ({
-              id: i.inventory_id,
+              id: i.id,
               name: i.display_name || i.name,
               price: i.price || 0,
               image_url: i.image_url || null,
@@ -76,7 +77,7 @@ export default function ProductMenu() {
       await supabase
         .from('kiosk_items')
         .update({ image_url: publicUrl })
-        .eq('inventory_id', item.id);
+        .eq('id', item.id);
       setItems((prev) =>
         prev.map((i) => (i.id === item.id ? { ...i, image_url: publicUrl } : i))
       );
@@ -129,7 +130,7 @@ export default function ProductMenu() {
 
       <button
         onClick={() => setShowAI((v) => !v)}
-        className="fixed bottom-4 right-4 p-4 rounded-full bg-[var(--color-primary)] text-black shadow-lg transition-transform transform hover:scale-105 active:scale-95"
+        className="fixed bottom-4 right-4 p-4 rounded-full bg-[var(--color-primary)] text-black shadow-lg transition-transform transform hover:scale-110 hover:shadow-[0_0_20px_var(--color-primary)] active:scale-95"
         aria-label="AI Consultant"
       >
         <MessageCircle className="w-6 h-6" />
