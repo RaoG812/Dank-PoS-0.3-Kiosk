@@ -36,41 +36,45 @@ export default function ProductMenu() {
   }, []);
 
   const handleGenerateImage = async (item: Item) => {
-    setLoadingId(item.id);
-    const base64 = await generateStrainImage(item.name);
-    if (!base64) {
+    try {
+      setLoadingId(item.id);
+      const base64 = await generateStrainImage(item.name);
+      if (!base64) throw new Error('No image data returned');
+
+      const supabase = getClientSupabaseClient();
+      const filePath = `strain-images/${item.id}.png`;
+
+      const byteCharacters = atob(base64);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: 'image/png' });
+
+      const { error: uploadError } = await supabase.storage
+        .from('strain-images')
+        .upload(filePath, blob, { upsert: true, contentType: 'image/png' });
+      if (uploadError) throw uploadError;
+
+      const { data: urlData } = await supabase.storage
+        .from('strain-images')
+        .getPublicUrl(filePath);
+      const publicUrl = urlData.publicUrl;
+
+      await supabase
+        .from('inventory')
+        .update({ image_url: publicUrl })
+        .eq('id', item.id);
+      setItems((prev) =>
+        prev.map((i) => (i.id === item.id ? { ...i, image_url: publicUrl } : i))
+      );
+    } catch (e) {
+      console.error('Image generation failed', e);
+      alert('Failed to generate image');
+    } finally {
       setLoadingId(null);
-      return;
     }
-    const supabase = getClientSupabaseClient();
-    const filePath = `strain-images/${item.id}.png`;
-
-    const byteCharacters = atob(base64);
-    const byteNumbers = new Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
-    }
-    const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], { type: 'image/png' });
-
-    const { error: uploadError } = await supabase.storage
-      .from('strain-images')
-      .upload(filePath, blob, { upsert: true, contentType: 'image/png' });
-    if (uploadError) {
-      setLoadingId(null);
-      return;
-    }
-
-    const { data: urlData } = await supabase.storage
-      .from('strain-images')
-      .getPublicUrl(filePath);
-    const publicUrl = urlData.publicUrl;
-
-    await supabase.from('inventory').update({ image_url: publicUrl }).eq('id', item.id);
-    setItems((prev) =>
-      prev.map((i) => (i.id === item.id ? { ...i, image_url: publicUrl } : i))
-    );
-    setLoadingId(null);
   };
 
   return (
@@ -79,12 +83,16 @@ export default function ProductMenu() {
         {items.map((i) => (
           <div key={i.id} className="bg-[var(--color-bg-secondary)] rounded-lg p-4 flex flex-col items-center shadow-lg">
             {i.image_url ? (
-              <img src={i.image_url} alt={i.name} className="mb-2 w-full h-48 object-cover rounded" />
+              <img
+                src={i.image_url}
+                alt={i.name}
+                className="mb-2 w-full h-48 object-cover rounded"
+              />
             ) : (
               <button
                 onClick={() => handleGenerateImage(i)}
                 disabled={loadingId === i.id}
-                className="mb-2 w-full h-48 flex items-center justify-center bg-[var(--color-bg-primary)] text-sm text-[var(--color-primary)] border border-dashed border-[var(--color-border)] rounded"
+                className="mb-2 w-full h-48 flex items-center justify-center bg-[var(--color-bg-primary)] text-sm text-[var(--color-primary)] border border-dashed border-[var(--color-border)] rounded cursor-pointer"
               >
                 {loadingId === i.id ? 'Generating...' : 'Generate Image'}
               </button>

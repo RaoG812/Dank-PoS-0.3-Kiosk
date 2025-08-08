@@ -23,9 +23,21 @@ export default function SettingsPage() {
     setItems(items.filter((i) => i.id !== id));
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('loggedIn');
+    localStorage.removeItem('supabaseUrl');
+    localStorage.removeItem('supabaseAnonKey');
+    window.location.href = '/';
+  };
+
+  const handleIdle = () => {
+    sessionStorage.setItem('forceIdle', 'true');
+    window.location.href = '/';
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
-      <NavBar />
+      <NavBar onLogout={handleLogout} onIdle={handleIdle} />
       <div className="p-6 space-y-4 flex-1 overflow-y-auto">
         <h1 className="text-2xl font-bold mb-4">Settings</h1>
         {items.map(i => (

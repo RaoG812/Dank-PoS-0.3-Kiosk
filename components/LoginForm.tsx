@@ -4,7 +4,7 @@ import { initializeSupabaseClient } from '../lib/supabase/client';
 import { useLoader } from '../contexts/LoaderContext';
 import { useCustomAlert } from '../contexts/CustomAlertContext';
 
-export default function LoginForm({ onLoggedIn }: { onLoggedIn: () => void }) {
+export default function LoginForm({ onLoggedIn }: { onLoggedIn: (url: string, key: string) => void }) {
   const [uid, setUid] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -28,7 +28,7 @@ export default function LoginForm({ onLoggedIn }: { onLoggedIn: () => void }) {
       }
       initializeSupabaseClient(data.supabase_url, data.supabase_anon_key);
       showCustomAlert('Welcome', `Logged in as ${data.username || 'User'}`);
-      onLoggedIn();
+      onLoggedIn(data.supabase_url, data.supabase_anon_key);
     } catch (err: any) {
       setError(err.message);
     } finally {

@@ -4,16 +4,32 @@ import IdleScreen from '../components/IdleScreen';
 import ProductMenu from '../components/ProductMenu';
 import LoginForm from '../components/LoginForm';
 import NavBar from '../components/NavBar';
+import { initializeSupabaseClient } from '../lib/supabase/client';
 
 export default function Home() {
   const [idle, setIdle] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
 
-  // Restore login status so navigation doesn't bounce back to the login screen
+  // Restore login status and Supabase credentials
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem('loggedIn');
-      if (stored === 'true') setLoggedIn(true);
+      if (stored === 'true') {
+        const url = localStorage.getItem('supabaseUrl');
+        const key = localStorage.getItem('supabaseAnonKey');
+        if (url && key) {
+          try {
+            initializeSupabaseClient(url, key);
+          } catch (e) {
+            console.error('Failed to restore Supabase client:', e);
+          }
+        }
+        setLoggedIn(true);
+        if (sessionStorage.getItem('forceIdle') === 'true') {
+          setIdle(true);
+          sessionStorage.removeItem('forceIdle');
+        }
+      }
     }
   }, []);
 
@@ -37,19 +53,28 @@ export default function Home() {
   if (!loggedIn) {
     return (
       <LoginForm
-        onLoggedIn={() => {
+        onLoggedIn={(url, key) => {
           localStorage.setItem('loggedIn', 'true');
+          localStorage.setItem('supabaseUrl', url);
+          localStorage.setItem('supabaseAnonKey', key);
           setLoggedIn(true);
         }}
       />
     );
   }
 
+  const handleLogout = () => {
+    localStorage.removeItem('loggedIn');
+    localStorage.removeItem('supabaseUrl');
+    localStorage.removeItem('supabaseAnonKey');
+    setLoggedIn(false);
+  };
+
   return idle ? (
     <IdleScreen onWake={() => setIdle(false)} />
   ) : (
     <div className="h-screen flex flex-col">
-      <NavBar />
+      <NavBar onLogout={handleLogout} onIdle={() => setIdle(true)} />
       <ProductMenu />
     </div>
   );
