@@ -12,6 +12,8 @@ export default function AIConsultant({ items }: { items: Item[] }) {
 
   const ask = async () => {
     setLoading(true);
+    setAnswer('');
+    setError('');
     try {
       const res = await generateConsultation(question, items.map(i => i.name));
       setAnswer(res);
@@ -30,7 +32,11 @@ export default function AIConsultant({ items }: { items: Item[] }) {
         value={question}
         onChange={e => setQuestion(e.target.value)}
       />
-      <button onClick={ask} className="bg-[var(--color-primary)] text-black py-1 rounded disabled:opacity-50" disabled={loading || !question}>
+      <button
+        onClick={ask}
+        className="bg-[var(--color-primary)] text-black py-2 rounded shadow hover:scale-105 active:scale-95 transition-transform disabled:opacity-50"
+        disabled={loading || !question}
+      >
         {loading ? 'Thinking...' : 'Ask AI'}
       </button>
       {answer && <p className="mt-2 text-sm whitespace-pre-line">{answer}</p>}
