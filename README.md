@@ -15,6 +15,8 @@ Main Features:
 - Persistent login so the menu remains accessible when navigating.
 - Floating AI assistant button with smooth animations.
 - Ability to link orders to the main Dank PoS session when a shop PoS is logged in.
+- Layout editor to manage which inventory items appear and tweak their images or prices.
+- Settings page with switches for showing pictures, product details, and idle timeout control.
 
 The kiosk uses the same Supabase back end as the main app and can be started with
 `npm run dev` inside this folder.

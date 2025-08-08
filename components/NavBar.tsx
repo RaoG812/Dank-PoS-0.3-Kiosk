@@ -7,7 +7,8 @@ export default function NavBar({ onLogout, onIdle }: { onLogout: () => void; onI
       <Link href="/" className="font-bold text-xl">Dank Machine</Link>
       <div className="space-x-4 text-lg">
         <Link href="/" className="hover:text-[var(--color-primary)]">Menu</Link>
-        <Link href="/-accessed" className="hover:text-[var(--color-primary)]">Settings</Link>
+        <Link href="/layout-editor" className="hover:text-[var(--color-primary)]">Layout</Link>
+        <Link href="/settings" className="hover:text-[var(--color-primary)]">Settings</Link>
         <button onClick={onIdle} className="hover:text-[var(--color-primary)]">Idle</button>
         <button onClick={onLogout} className="hover:text-[var(--color-primary)]">Logout</button>
       </div>
