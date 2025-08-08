@@ -30,22 +30,28 @@ export default function ProductMenu() {
     }
 
     restoreSupabaseClient();
-    const supabase = getClientSupabaseClient();
-    supabase
-      .from('kiosk_items')
-      .select('id, name, display_name, price, image_url')
-      .eq('enabled', true)
-      .then(({ data }) => {
-        if (data)
-          setItems(
-            (data as any[]).map((i) => ({
-              id: i.id,
-              name: i.display_name || i.name,
-              price: i.price || 0,
-              image_url: i.image_url || null,
-            }))
-          );
-      });
+    const load = async () => {
+      const supabase = getClientSupabaseClient();
+      const { data, error } = await supabase
+        .from('kiosk_items')
+        .select('*')
+        .eq('enabled', true);
+      if (error) {
+        console.error('Failed to fetch kiosk items', error);
+        return;
+      }
+      if (data) {
+        setItems(
+          (data as any[]).map((i) => ({
+            id: i.id,
+            name: i.display_name || i.name,
+            price: i.price || 0,
+            image_url: i.image_url || null,
+          }))
+        );
+      }
+    };
+    load();
   }, []);
 
   const handleGenerateImage = async (item: Item) => {

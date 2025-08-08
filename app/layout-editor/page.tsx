@@ -22,12 +22,20 @@ export default function LayoutPage() {
     const load = async () => {
       restoreSupabaseClient();
       const supabase = getClientSupabaseClient();
-      const { data: inv } = await supabase
+      const { data: inv, error: invError } = await supabase
         .from('inventory')
-        .select('id, name, pricing_options, image_url, category, description');
-      const { data: kiosk } = await supabase
+        .select('*');
+      if (invError) {
+        console.error('Failed to fetch inventory', invError);
+        return;
+      }
+      const { data: kiosk, error: kioskError } = await supabase
         .from('kiosk_items')
-        .select('id, name, display_name, price, image_url, enabled');
+        .select('*');
+      if (kioskError) {
+        console.error('Failed to fetch kiosk items', kioskError);
+        return;
+      }
       const merged = (inv || []).map((i: any) => {
         const k = kiosk?.find((ki: any) => ki.id === i.id);
         return {
